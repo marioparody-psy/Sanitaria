@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programa de Intervención Sanitaria - IVE/ILE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Warm Neutral & ROSE (bg-stone-100, text-stone-800, bg-white, text-rose-600, text-amber-700) -->
+    <style>
+        @import url('https://fonts2.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f4; 
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        
+        /* ESTILOS DE ELEMENTOS BASE (Aplicación permanente de estilos) */
+        
+        /* Estilos base de la solapa/pestaña */
+        .tab-btn {
+            /* Base: Blanco con borde y sombra sutil */
+            /* IMPORTANTE: Los efectos de HOVER ahora se manejan con JavaScript */
+            @apply px-4 py-2 font-medium rounded-lg transition-all duration-200 border border-stone-300 bg-white shadow-sm text-stone-700; 
+        }
+        /* Estilos de la solapa/pestaña activa (siempre visible) */
+        .tab-btn.active {
+            /* Activo: Rose medio con texto blanco, sombra fuerte y borde */
+            @apply bg-rose-500 text-white shadow-xl border-rose-500; 
+        }
+        
+        /* Estilos base del botón de plan */
+        .plan-btn {
+             /* APLICACIÓN FORZADA: Negritas y Mayúsculas */
+             /* Base: Rose Suave (bg-rose-500) */
+             @apply px-5 py-2 inline-block text-sm font-bold uppercase text-white bg-rose-500 rounded-full transition-all duration-200 shadow-md mt-3; 
+        }
+        /* Estilos del botón de plan activo (siempre visible) */
+         .plan-btn.active {
+            /* Activo: Rose un poco más oscuro (bg-rose-600) con anillo y sombra interna */
+            @apply bg-rose-600 ring-2 ring-rose-300 shadow-inner;
+         }
+         
+         .nav-link {
+            /* Estilos de los enlaces de navegación. HOVER AHORA EN JS */
+            @apply px-3 py-2 rounded-md text-sm font-medium text-stone-700 transition-all duration-200 border-b-2 border-transparent;
+         }
+         
+    </style>
+</head>
+<body class="text-stone-800">
+
+    <header class="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-sm shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <!-- Título principal cambiado a rose-600 (tono principal) -->
+                    <span class="text-xl font-bold text-rose-600">Cátedra de Psicología Sanitaria en Salud Pública</span>
+                </div>
+                <!-- Menú de navegación de escritorio -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-14">
+                        <a href="#inicio" class="nav-link"><strong>Inicio</strong></a>
+                        <a href="#problema" class="nav-link"><strong>El Problema</strong></a>
+                        <a href="#plan" class="nav-link"><strong>El Plan</strong></a>
+                        <a href="#metas" class="nav-link"><strong>Metas</strong></a>
+                        <a href="#fundamentos" class="nav-link"><strong>Fundamentos Teóricos</strong></a>
+                    </div>
+                </div>
+                <!-- Botón de menú móvil -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="inline-flex items-center justify-center p-2 rounded-md text-stone-600 hover:bg-rose-200 focus:outline-none">
+                        <span class="text-2xl">☰</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <!-- Menú móvil desplegable -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <div class="px-2 pt-2 pb-4 space-y-1 sm:px-3">
+                <a href="#inicio" class="nav-link block">Inicio</a>
+                <a href="#problema" class="nav-link block">El Problema</a>
+                <a href="#plan" class="nav-link block">El Plan</a>
+                <a href="#metas" class="nav-link block">Metas</a>
+                <a href="#fundamentos" class="nav-link block">Fundamentos</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <section id="inicio" class="min-h-[80vh] flex items-center justify-center">
+            <div class="w-full max-w-4xl text-center">
+                <!-- Título principal cambiado a rose-600 -->
+                <h1 class="text-4xl md:text-5xl font-bold text-teal-600 mb-6">Programa de Intervención Sanitaria</h1>
+                <p class="text-xl md:text-2xl text-stone-700 mb-10"><strong>Reducción de Demoras y Acceso Oportuno a IVE / ILE</strong></p>
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-stone-200">
+                    <h2 class="text-2xl font-bold text-stone-800 mb-4">Resumen del Programa</h2>
+                    <p class="text-lg text-stone-600 leading-relaxed text-justify">
+                        Este programa aborda las demoras y la desinformación en el acceso a la Interrupción Voluntaria (IVE) y Legal (ILE) del Embarazo en el Hospital Materno Neonatal de Córdoba. Está dirigido a mujeres y personas gestantes de 15 a 25 años, basándose en la Ley N° 27.610 que regula el acceso a las interrupciones y garantiza los derechos reproductivos, buscando promover un abordaje seguro, respetuoso y accesible. El objetivo es trascender la asistencia médica tradicional hacia un trabajo <strong>INTERDISCIPLINARIO</strong> e <strong>INTERSECTORIAL</strong> que garantice el derecho a decidir de forma libre, informada y segura, combatiendo las barreras estructurales, simbólicas y las desigualdades de género.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="problema" class="py-16">
+            <h2 class="text-3xl font-bold text-center text-stone-800 mb-4">El Problema: Árbol de Causas y Efectos</h2>
+            <p class="text-lg text-stone-600 text-center max-w-3xl mx-auto mb-12">
+                El problema central son las demoras en el acceso a la IVE/ILE. El gráfico permite visualizar cómo las causas estructurales y la desinformación conducen al problema abordado, cuáles son sus efectos directos en la salud y en los derechos de las personas
+            </p>
+            
+            <div class="flex justify-center mb-8">
+                <!-- Imagen del Árbol de Problemas -->
+                <img src='https://i.postimg.cc/fL1r869H/arbol-problemas.png' 
+                     alt="Diagrama de Árbol de Problemas (Causas, Problema Central y Efectos) del acceso tardío a IVE/ILE." 
+                     class="w-full md:w-3/4 lg:w-2/3 max-w-4xl h-auto rounded-xl shadow-lg border border-stone-300"
+                     onerror="this.onerror=null; this.src='https://placehold.co/800x600/fecaca/9f1239?text=Error:+Imagen+del+%C3%81rbol+no+cargada';"
+                >
+            </div>
+            
+            
+        </section>
+
+        <section id="plan" class="py-16 bg-white rounded-xl shadow-lg border border-stone-200 my-16">
+            <h2 class="text-3xl font-bold text-center text-stone-800 mb-4">El Plan de Acción: Intervención en 3 Niveles</h2>
+            <p class="text-lg text-stone-600 text-center max-w-3xl mx-auto mb-4">
+                Objetivo General: Brindar Información Clara, Precisa y de Fácil Acceso</p>
+            <p class="text-lg text-stone-600 text-center max-w-3xl mx-auto mb-12">
+                El plan se estructura en tres niveles de intervención interconectados
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center mb-8">
+                
+                <div class="bg-stone-100 p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border border-stone-200">
+                    <span class="text-5xl">👥</span>
+                    <!-- Título de plano cambiado a rose-600 -->
+                    <h3 class="text-2xl font-bold text-rose-600 my-3">Plano Individual</h3>
+                    <p class="text-stone-600 h-20">Atención directa y consejería para la autonomía y reducción de la ansiedad</p>
+                    <button class="plan-btn" data-plan="individual"><span><strong>VER DETALLES</strong></span></button>
+                </div>
+                
+                <div class="bg-stone-100 p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border border-stone-200">
+                    <span class="text-5xl">🏢</span>
+                    <!-- Título de plano cambiado a rose-600 -->
+                    <h3 class="text-2xl font-bold text-rose-600 my-3">Plano Institucional</h3>
+                    <p class="text-stone-600 h-20">Creación de materiales y capacitación de equipos para unificar la información</p>
+                    <button class="plan-btn" data-plan="institucional"><span><strong>VER DETALLES</strong></span></button>
+                </div>
+
+                <div class="bg-stone-100 p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border border-stone-200">
+                    <span class="text-5xl">🌍</span>
+                    <!-- Título de plano cambiado a rose-600 -->
+                    <h3 class="text-2xl font-bold text-rose-600 my-3">Plano Comunitario</h3>
+                    <p class="text-stone-600 h-20">Trabajo en red con escuelas y organizaciones para desmitificar y sensibilizar</p>
+                    <button class="plan-btn" data-plan="comunitario"><span><strong>VER DETALLES</strong></span></button>
+                </div>
+            </div>
+            
+            <div id="plan-details-container" class="mt-8 px-6 transition-all duration-300">
+                 <!-- Fondo de detalles cambiado a rose-50 y texto a rose-800 -->
+                 <div id="plan-details" class="bg-rose-50 border border-rose-200 p-6 rounded-lg min-h-[100px] text-lg text-rose-800">
+                    <p class="text-center font-medium">Seleccione un plano de acción para ver las actividades específicas.</p>
+                 </div>
+            </div>
+        </section>
+
+        <section id="metas" class="py-16">
+            <h2 class="text-3xl font-bold text-center text-stone-800 mb-4">Metas del Programa</h2>
+            <p class="text-lg text-stone-600 text-center max-w-3xl mx-auto mb-4">
+                Objetivos Específicos
+            </p>
+            <p class="text-lg text-stone-600 text-center max-w-3xl mx-auto mb-12">
+                El éxito del programa se medirá a través de metas claras, cuantitativas y con plazos definidos
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center bg-white p-6 rounded-xl shadow-lg border border-stone-200">
+                    <h3 class="text-xl font-semibold text-stone-800 mb-4">Meta 1: Reducir Demoras</h3>
+                    <div class="chart-container">
+                        <canvas id="meta1Chart"></canvas>
+                    </div>
+                    <p class="text-stone-600 mt-4">Disminuir en un 20% los casos con más de 10 días de demora - Plazo: 6 meses</p>
+                </div>
+                <div class="text-center bg-white p-6 rounded-xl shadow-lg border border-stone-200">
+                    <h3 class="text-xl font-semibold text-stone-800 mb-4">Meta 2: Mejorar Conocimiento</h3>
+                    <div class="chart-container">
+                        <canvas id="meta2Chart"></canvas>
+                    </div>
+                    <p class="text-stone-600 mt-4">Aumentar en un 30% el conocimiento del marco legal en la población meta - Plazo: 3 meses</p>
+                </div>
+                <div class="text-center bg-white p-6 rounded-xl shadow-lg border border-stone-200">
+                    <h3 class="text-xl font-semibold text-stone-800 mb-4">Meta 3: Articular Redes</h3>
+                    <div class="chart-container">
+                        <canvas id="meta3Chart"></canvas>
+                    </div>
+                    <p class="text-stone-600 mt-4">Lograr que el 80% de equipos y redes usen protocolos unificados - Plazo: 4 meses</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="fundamentos" class="py-16">
+            <h2 class="text-3xl font-bold text-center text-stone-800 mb-4">Fundamentos Teóricos</h2>
+            <p class="text-lg text-stone-600 text-center max-w-3xl mx-auto mb-12">
+                El programa se basa en un sólido marco conceptual que integra diferentes perspectivas en salud y que articulan con los conceptos de las siguientes nociones:
+            </p>
+            <div class="flex flex-wrap justify-center gap-2 md:gap-12 mb-24">
+                <!-- Se inicializa la primera pestaña como activa por defecto -->
+                <button class="tab-btn active" data-tab="psicologia"><strong>PSICOLOGÍA SANITARIA</strong></button>
+                <button class="tab-btn" data-tab="promocion"><strong>PROMOCIÓN DE LA SALUD</strong></button>
+                <button class="tab-btn" data-tab="participacion"><strong>PARTICIPACIÓN EN SALUD</strong></button>
+                <button class="tab-btn" data-tab="educacion"><strong>EDUCACIÓN PARA LA SALUD</strong></button>
+            </div>
+            <div id="fundamento-content" class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-stone-200 min-h-[250px]">
+                <!-- El contenido se inyecta aquí por JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8">
+        <p class="text-stone-800">Programa de Intervención bajo tutoría (e inspiración ❤️) de la Lic. Magister Mariana Illanes - Universidad Nacional de Córdoba, Noviembre del 2025.</p>
+        <p class="text-stone-800">Mario Parody - Milagros Silvetti</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Colores de Interacción (Rose-based)
+            const ROSE_50 = '#fff1f2';    // Fondo claro para detalles (rose-50)
+            const ROSE_100 = '#ffe4e6';  // Fondo claro para hover de pestañas
+            const ROSE_500 = '#f43f5e';  // Color Base del Botón (ROJO SUAVE)
+            const ROSE_600 = '#e11d48';  // Color Activo del Botón (Un poco más oscuro)
+            const ROSE_700 = '#be123c';  // Color Hover (para activo e inactivo) - Más oscuro para efecto de "presionado"
+            const ROSE_800 = '#9f1239';  // Color de texto de detalles y títulos
+            const STONE_700 = '#57534e'; // Color de texto normal
+            const STONE_300 = '#d6d3d1'; // Color de borde normal
+            const WHITE = '#ffffff';     // Añadido para los enlaces de navegación
+
+            // Se actualizó ROSE_500 como color base para los botones, 
+            // ROSE_600 como color activo y ROSE_700 como color hover.
+
+            const navData = {
+                plan: {
+                    individual: {
+                        title: 'Actividades del Plano Individual',
+                        items: [
+                            'Consejería psicológica y jurídica clara, accesible y oportuna',
+                            'Reducción de la incertidumbre y la ansiedad mediante información validada',
+                            'Promoción de la autonomía en la toma de decisiones informadas',
+                            'Búsqueda de una persona de apoyo afectivo para adolescentes'
+                        ]
+                    },
+                    institucional: {
+                        title: 'Actividades del Plano Institucional',
+                        items: [
+                            'Producción y difusión de materiales psicoeducativos (folletos, videos)',
+                            'Visitas programadas de escuelas para actividades de ESI',
+                            'Capacitación y sensibilización de los equipos de salud del hospital',
+                            'Uso de la página web de Nación, el 0-800 como canales oficiales y abogar por una posible web oficial del Hospital'
+                        ]
+                    },
+                    comunitario: {
+                        title: 'Actividades del Plano Comunitario',
+                        items: [
+                            'Campañas de sensibilización y difusión masiva sobre el derecho a IVE/ILE',
+                            'Trabajo en red y articulación con organizaciones sociales y centros de salud',
+                            'Desmitificación de la IVE/ILE como un proceso ilegal o inseguro',
+                            'Abordaje de las barreras simbólicas y estigmas en la comunidad'
+                        ]
+                    }
+                },
+                fundamentos: {
+                    psicologia: {
+                        title: 'Psicología Sanitaria (Dávila)',
+                        text: 'Este enfoque concibe la salud humana como un <strong>proceso colectivo</strong>, rompiendo la dicotomía mente-cuerpo y psique-contexto social. La intervención busca develar y desmitificar los paradigmas (desinformación, culpa, ilegalidad) que actúan como barreras estructurales y simbólicas. Se trabaja en los tres planos o esferas de acción del ejercicio profesional para abordar la complejidad del problema desde la vida cotidiana de las personas.'
+                    },
+                    promocion: {
+                        title: 'Promoción de la Salud (Czeresnia/Machado)',
+                        text: 'Se basa en una concepción amplia del Proceso S-E-A, definiendo la salud como un <strong>recurso para la vida</strong>. El programa aplica este enfoque al buscar la <strong>capacitación</strong> de la colectividad para mejorar su calidad de vida, logrando autonomía sobre su salud. Las campañas y el trabajo en red buscan crear ambientes favorables y desarrollar habilidades personales, reconociendo la responsabilidad intersectorial. El objetivo general de brindar información clara y precisa es un componente clave.'
+                    },
+                    participacion: {
+                        title: 'Participación en Salud (Rovere/Pellón)',
+                        text: 'Este concepto entiende la participación como el <strong>ejercicio del poder y la capacidad de tomar decisiones</strong>. La desinformación es una barrera que crea asimetría de poder. El programa articula este concepto al centrarse en la <strong>socialización del conocimiento</strong> (información clara y accesible) como herramienta fundamental para que las personas gestantes sean protagonistas de su proceso de salud, transformando la realidad y asegurando que el acceso al servicio sea un ejercicio pleno de un derecho garantizado por ley.'
+                    },
+                    educacion: {
+                        title: 'Educación para la Salud (Aibar)',
+                        text: 'La <strong>capacitación</strong> logra la <strong>autosuficiencia</strong> de las personas en la toma de decisiones. La consejería psicológica clara y accesible es la herramienta clave, debiendo ser dialogante/negociadora. También integra la orientación <strong>radical</strong>, al reconocer que las desigualdades sociales y de género son la raíz del problema. Por ello, implementa acciones comunitarias y desde las escuelas (ESI) como un ámbito altamente efectivo para generar ese cambio social promoviendo una conciencia crítica.'
+                    }
+                }
+            };
+            
+            // Función para crear el gráfico de dona
+            function createDonutChart(ctx, label, data, labels) {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            // Color principal del gráfico cambiado a rose-600
+                            data: data,
+                            backgroundColor: [ROSE_600, '#f1f1f1'],
+                            borderColor: [ROSE_600, '#e5e5e5'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    font: { size: 12 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.raw}%`;
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: `${data[0]}% Objetivo`,
+                                position: 'top',
+                                font: { size: 16, weight: 'bold' },
+                                color: '#333'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Cargar todos los gráficos
+            function loadCharts() {
+                const ctx1 = document.getElementById('meta1Chart')?.getContext('2d');
+                if (ctx1) createDonutChart(ctx1, 'Reducción Demoras', [20, 80], ['Meta Reducción', 'Demoras']);
+                
+                const ctx2 = document.getElementById('meta2Chart')?.getContext('2d');
+                if (ctx2) createDonutChart(ctx2, 'Mejora Conocimiento', [30, 70], ['Meta Conocimiento', 'Desinformación']);
+                
+                const ctx3 = document.getElementById('meta3Chart')?.getContext('2d');
+                if (ctx3) createDonutChart(ctx3, 'Articulación Redes', [80, 20], ['Meta Articulación', 'Desvinculación']);
+            }
+            
+            // Inicializar navegación y menú móvil
+            function initNav() {
+                const navLinks = document.querySelectorAll('.nav-link');
+                const mobileMenu = document.getElementById('mobile-menu');
+                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                
+                navLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = e.currentTarget.getAttribute('href');
+                        document.querySelector(targetId).scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        if (mobileMenu.classList.contains('hidden') === false) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    });
+                });
+                
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Inicializar la interacción de los Planos de Acción
+            function initPlanInteractions() {
+                const planButtons = document.querySelectorAll('.plan-btn');
+                const detailsContainer = document.getElementById('plan-details');
+                
+                planButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const planKey = button.getAttribute('data-plan');
+                        const data = navData.plan[planKey];
+                        
+                        // Remover clase 'active' de todos y agregarla al presionado
+                        planButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        
+                        let content = `<h4 class="text-xl font-bold mb-4">${data.title}</h4>`;
+                        content += '<ul class="list-disc list-inside space-y-2">';
+                        data.items.forEach(item => {
+                            content += `<li>${item}</li>`;
+                        });
+                        content += '</ul>';
+                        
+                        detailsContainer.innerHTML = content;
+                    });
+                });
+            }
+
+            // Inicializar la interacción de las Pestañas de Fundamentos
+            function initFundamentosTabs() {
+                const tabButtons = document.querySelectorAll('.tab-btn');
+                const contentContainer = document.getElementById('fundamento-content');
+
+                // Función para actualizar el contenido de la pestaña
+                function updateTabContent(tabKey) {
+                    const data = navData.fundamentos[tabKey];
+                    contentContainer.innerHTML = `
+                        <!-- Título de pestaña cambiado a rose-600 -->
+                        <h3 class="text-2xl font-bold text-rose-600 mb-4">${data.title}</h3>
+                        <p class="text-lg text-stone-700 leading-relaxed">${data.text}</p>
+                    `;
+                }
+
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const tabKey = button.getAttribute('data-tab');
+                        // Remover clase 'active' de todos y agregarla al presionado
+                        tabButtons.forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        button.classList.add('active');
+                        updateTabContent(tabKey);
+                    });
+                });
+
+                // Cargar el contenido de la primera pestaña por defecto y marcarla como activa
+                const defaultTab = document.querySelector('.tab-btn[data-tab="psicologia"]');
+                if (defaultTab) {
+                    // Asegurarse de que solo esta tenga la clase 'active'
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    defaultTab.classList.add('active');
+                    updateTabContent(defaultTab.getAttribute('data-tab'));
+                }
+            }
+
+            // *** SOLUCIÓN ROBUSTA DE JAVASCRIPT PARA HOVERS ***
+            function initHoverWorkarounds() {
+                const tabButtons = document.querySelectorAll('.tab-btn');
+                const planButtons = document.querySelectorAll('.plan-btn');
+                const navLinks = document.querySelectorAll('.nav-link'); 
+
+                // Hover para Enlaces de Navegación (Nav Links)
+                navLinks.forEach(link => {
+                    link.addEventListener('mouseover', () => {
+                        link.style.backgroundColor = ROSE_500; // hover:bg-rose-500
+                        link.style.color = WHITE; // hover:text-white
+                        link.style.borderBottomWidth = '4px'; // hover:border-b-4
+                        link.style.borderColor = ROSE_700; // hover:border-rose-700
+                    });
+                    link.addEventListener('mouseout', () => {
+                        // Volver al estado base
+                        link.style.backgroundColor = 'transparent';
+                        link.style.color = STONE_700; // text-stone-700
+                        link.style.borderBottomWidth = '2px'; // border-b-2
+                        link.style.borderColor = 'transparent';
+                    });
+                });
+
+                // Hover para Pestañas (Fundamentos)
+                tabButtons.forEach(button => {
+                    button.addEventListener('mouseover', () => {
+                        // Aplicar solo si NO está activo
+                        if (button.classList.contains('active')) return;
+                        button.style.backgroundColor = ROSE_100; // rose-100 (fondo muy claro)
+                        button.style.color = ROSE_700; // rose-700
+                        button.style.borderWidth = '2px';
+                        button.style.borderColor = ROSE_500; // rose-500
+                        button.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)'; // shadow-lg
+                    });
+                    button.addEventListener('mouseout', () => {
+                         if (button.classList.contains('active')) return;
+                        // Volver al estado base
+                        button.style.backgroundColor = 'white';
+                        button.style.color = STONE_700; // stone-700
+                        button.style.borderWidth = '1px';
+                        button.style.borderColor = STONE_300; // stone-300
+                        button.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)'; // shadow-sm
+                    });
+                });
+
+                // Hover para Botones de Plan (COMPORTAMIENTO UNIFICADO)
+                planButtons.forEach(button => {
+                    button.addEventListener('mouseover', () => {
+                        // COMPORTAMIENTO UNIFICADO: Todos cambian a ROSE_700 y escalan
+                        button.style.backgroundColor = ROSE_700; 
+                        button.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)'; // shadow-xl
+                        button.style.transform = 'scale(1.03)';
+                    });
+                    button.addEventListener('mouseout', () => {
+                        if (button.classList.contains('active')) {
+                            // Si está activo, vuelve a su estado de activo (ROSE_600 + shadow-inner)
+                            button.style.backgroundColor = ROSE_600; 
+                            button.style.boxShadow = 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)'; 
+                            button.style.transform = 'scale(1)';
+                        } else {
+                            // Si está inactivo, vuelve a su estado base (ROSE_500 + shadow-md)
+                            button.style.backgroundColor = ROSE_500; 
+                            button.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)'; // shadow-md
+                            button.style.transform = 'scale(1)';
+                        }
+                    });
+                });
+            }
+            // *** FIN SOLUCIÓN JAVASCRIPT PARA HOVERS ***
+
+
+            // Ejecución al cargar el DOM
+            initNav();
+            loadCharts();
+            initPlanInteractions();
+            initFundamentosTabs();
+            initHoverWorkarounds(); // Inicializar la solución de emergencia para hovers
+            
+            // CORRECCIÓN: Al cargar, simular un clic en el primer botón de Plan para marcarlo como activo y cargar el contenido.
+            const firstPlanButton = document.querySelector('.plan-btn[data-plan="individual"]');
+            if (firstPlanButton) {
+                // Simular un clic para cargar el contenido, lo cual también llama a la función de activar/desactivar clases.
+                firstPlanButton.click(); 
+            }
+        });
+    </script>
+</body>
+</html>
